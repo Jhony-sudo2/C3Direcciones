@@ -1,0 +1,43 @@
+// seccion codigo
+package com.cdirecciones;
+
+parser code {:
+        
+    int contador = 1;
+    public parser(Lexer lexer) {
+        super(lexer);
+    }
+    
+:}
+
+terminal String entero,id,decimal,suma,multiplicacion,division,resta,parentesisA,parentesisC;
+terminal coma,igual;
+
+// seccion de no termimales
+non terminal  INICIO,OP,A,B,C,D;
+start with INICIO;
+
+INICIO          ::= INICIO  OP        {::}
+                |   OP:n1             {::}
+                ;
+OP              ::= id:n2 igual A:n1 coma  {:System.out.println(n2 + "=" + n1 + "\n");:}
+                ;
+
+A               ::= A:n1 suma B:n2      {:System.out.println("t" + contador + "=" + n1 + "+" + n2);RESULT = "t" + contador;contador++;:}
+                |   A:n1 resta B:n2     {:System.out.println("t" + contador + "=" + n1 + "-" + n2);RESULT = "t" + contador;contador++;:}
+                |   B:n1                {:RESULT = n1;:} 
+                ;
+
+B               ::= B:n1 multiplicacion C:n2    {:System.out.println("t" + contador + "=" + n1 + "*" + n2);RESULT = "t" + contador;contador++;:}
+                |   B:n1 division  C:n2         {:System.out.println("t" + contador + "=" + n1 + "/" + n2);RESULT = "t" + contador;contador++;:}  
+                |   C:n1                        {:RESULT = n1;:}
+                ;
+
+C               ::= parentesisA A:n1 parentesisC      {:RESULT = n1;:}
+                |   D:n1                              {:RESULT = n1;:}
+                ;
+
+D               ::= entero:n1       {:RESULT = n1;:}
+                |   decimal:n1      {:RESULT = n1;:}
+                |   id:n1           {:RESULT = n1;:}
+                ;
